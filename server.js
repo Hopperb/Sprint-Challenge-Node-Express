@@ -57,33 +57,33 @@ server.get('/api/action/:id', (req, res) => {
 
 // POST REQUEST 
 // ===================PROJECT===================
-server.post('/api/project', (req, res) => {
+server.post('/api/action', (req, res) => {
     console.log(req, res)
     const {description, notes} = req.body;
     if(!description || !notes){
         res.status(404).json(`{error: "Please provide description and content"}`).end();
     } else {
-        project
+        action
         .insert({description, notes})
         .then(data => {res.status(200),json(data)})
-        .catch(error =>{res.status(500).json(err)})
+        .catch(err =>{res.status(500).json(err)})
     }
 })
 // ============================================================
 
 // UPDATE REQUEST 
-// =============== PROJECT ================
-server.put('/api/project/:id', (req, res) => {
+// =============== action ================
+server.put('/api/action/:id', (req, res) => {
     const id = req.params.id;
     const content = {description: req.body.description, notes: req.body.notes}
-    project.update(id, content).then(data => {
+    action.update(id, content).then(data => {
         if(!content){
             return res.status(404).json({error: "Please provide correct id, this one does not exist"})
         }
         if(!req.body.hasOwnProperty('description') || !req.body.hasOwnProperty('notes')){
             return res.status(404).json({error: "please provide description and content"})
         }
-        res.status(200).json(content)
+        res.status(200).json(data)
     })
     .catch(error => {
         res.status(500).json({error: "the information could not be modified"})
