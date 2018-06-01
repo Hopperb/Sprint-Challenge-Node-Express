@@ -14,22 +14,27 @@ const port = 5000;
 const server = express();
 server.use(express.json());
 
+// Customize Middleware 
+server.use(function(err, req, res, next){
+    console.log(err.stack)
+    res.status(500).json("something is wrong ")
+})
 
 // GET REQUEST 
 // =============Project===================
 server.get('/api/project/', (req, res) => {
     project
     .get()
-    .then(data => res.json(data))
-    .catch(err => {res.json(err)})
+    .then(data => res.status(200).json(data))
+    .catch(err => {res.status(500).json(err)})
 })
 // by ID
 server.get('/api/project/:id', (req, res) => {
-    const {id} = req.params
+    const {id} = req.params;
     project
     .get(id)
-    .then(data => res.json(data))
-    .catch(err => {res.json(err)})
+    .then(data =>  res.status(200).json(data))
+    .catch(err => {res.status(500).json(err)})
 })
 // ==========================================
 
@@ -37,21 +42,33 @@ server.get('/api/project/:id', (req, res) => {
 server.get('/api/action/', (req, res) => {
     action
     .get()
-    .then(data => res.json(data))
-    .catch(err => {res.json(err)})
+    .then(data =>  res.status(200).json(data))
+    .catch(err => {res.status(500).json(err)})
 })
 // by ID
 server.get('/api/action/:id', (req, res) => {
-    const {id} = req.params
+    const {id} = req.params;
     action
     .get(id)
-    .then(data => res.json(data))
+    .then(data =>  res.status(200).json(data))
     .catch(err => {res.json(err)})
 })
 // ==============================================
 
 
 
+// POST REQUEST 
+server.post('/api/project', (req, res) => {
+    const {description, notes} = req.body;
+    if(!description || !notes){
+        res.status(404).json(`{error: "Please provide description and content"}`).end();
+    } else {
+        project
+        .insert({description, notes})
+        .then(data => {res.status(200),json(data)})
+        .catch(error =>{res.status(500).json(err)})
+    }
+})
 
 
 
